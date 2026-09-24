@@ -27,6 +27,8 @@ npm run dev
 
 Ezután nyisd meg a [http://localhost:3000](http://localhost:3000) címet. A fejlesztői szerver az alkalmazáskód alapján a `prisma/dev.db` adatbázishoz csatlakozik.
 
+Ha az alkalmazást domain alatti útvonalra telepíted (például `https://pelda.hu/alresh`), a build előtt állítsd be a `.env` fájlban: `NEXT_PUBLIC_BASE_PATH="/alresh"`. A beállítás a Next.js build során érvényesül, ezért módosítás után újra kell buildelni és indítani az alkalmazást. A gyökér útvonalas helyi futtatáshoz hagyd üresen.
+
 ## Technológia
 
 - Next.js 16 és React 19

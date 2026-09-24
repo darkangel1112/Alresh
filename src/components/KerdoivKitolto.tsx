@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { appPath } from '@/lib/app-path'
 
 // ─── Típusok ──────────────────────────────────────────────────────────────────
 type Survey = {
@@ -91,7 +92,7 @@ export default function KerdoivKitolto({ surveyId }: { surveyId: number }) {
   const get = (key: string) => adatok[key] ?? ''
 
   useEffect(() => {
-    fetch(`/api/kerdoivek/${surveyId}`)
+    fetch(appPath(`/api/kerdoivek/${surveyId}`))
       .then(r => {
         if (!r.ok) throw new Error('A kérdőív adatai nem tölthetők be.')
         return r.json()
@@ -117,7 +118,7 @@ export default function KerdoivKitolto({ surveyId }: { surveyId: number }) {
     try {
       const body: Record<string, unknown> = { adatok: JSON.stringify(adatok) }
       if (allapot) body.allapot = allapot
-      const response = await fetch(`/api/kerdoivek/${surveyId}`, {
+      const response = await fetch(appPath(`/api/kerdoivek/${surveyId}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

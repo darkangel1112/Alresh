@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { appPath } from '@/lib/app-path'
 
 type Partner = { id: number; nev: string; szekhely: string | null }
 type User = { id: number; nev: string; szerepkor: string }
@@ -30,8 +31,8 @@ function UjKerdoivForm() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/partnerek').then(r => r.json()),
-      fetch('/api/felhasznalok').then(r => r.json()),
+      fetch(appPath('/api/partnerek')).then(r => r.json()),
+      fetch(appPath('/api/felhasznalok')).then(r => r.json()),
     ]).then(([p, u]) => {
       setPartnerek(p)
       setUsers(u)
@@ -48,7 +49,7 @@ function UjKerdoivForm() {
 
     setSaving(true)
     try {
-      const res = await fetch('/api/kerdoivek', {
+      const res = await fetch(appPath('/api/kerdoivek'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

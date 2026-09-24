@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { appPath } from '@/lib/app-path'
 
 const navItems = [
   { href: '/',             icon: '◈',  label: 'Dashboard' },
@@ -20,7 +21,7 @@ export default function Sidebar() {
         <div className="logo-wrap">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo.png"
+            src={appPath('/logo.png')}
             alt="Alresh logo"
             className="logo-img"
           />

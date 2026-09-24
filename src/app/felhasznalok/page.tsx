@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { appPath } from '@/lib/app-path'
 
 type User = { id: number; nev: string; email: string; szerepkor: string; letrehozva: string }
 
@@ -14,7 +15,7 @@ export default function FelhasznalokPage() {
 
   async function fetchUsers() {
     setLoading(true)
-    const res = await fetch('/api/felhasznalok')
+    const res = await fetch(appPath('/api/felhasznalok'))
     setUsers(await res.json())
     setLoading(false)
   }
@@ -26,7 +27,7 @@ export default function FelhasznalokPage() {
     setSaving(true)
     setErr('')
     try {
-      const res = await fetch('/api/felhasznalok', {
+      const res = await fetch(appPath('/api/felhasznalok'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

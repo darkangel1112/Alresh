@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useConfirmDialog } from '@/components/ConfirmDialog'
+import { appPath } from '@/lib/app-path'
 
 type Partner = {
   id: number
@@ -31,7 +32,7 @@ export default function PartnerekPage() {
 
   async function fetchPartnerek() {
     setLoading(true)
-    const res = await fetch('/api/partnerek')
+    const res = await fetch(appPath('/api/partnerek'))
     const data = await res.json()
     setPartnerek(data)
     setLoading(false)
@@ -39,7 +40,7 @@ export default function PartnerekPage() {
 
   useEffect(() => {
     let active = true
-    fetch('/api/partnerek')
+    fetch(appPath('/api/partnerek'))
       .then(response => {
         if (!response.ok) throw new Error('A partnerek nem tölthetők be.')
         return response.json()
@@ -55,7 +56,7 @@ export default function PartnerekPage() {
     setError('')
     setSaving(true)
     try {
-      const res = await fetch(editId === null ? '/api/partnerek' : `/api/partnerek/${editId}`, {
+      const res = await fetch(appPath(editId === null ? '/api/partnerek' : `/api/partnerek/${editId}`), {
         method: editId === null ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -104,7 +105,7 @@ export default function PartnerekPage() {
       confirmLabel: 'Partner törlése',
     })
     if (!confirmed) return
-    const response = await fetch(`/api/partnerek/${id}`, { method: 'DELETE' })
+    const response = await fetch(appPath(`/api/partnerek/${id}`), { method: 'DELETE' })
     const result = await response.json()
     if (!response.ok) {
       setError(result.error ?? 'Nem sikerült törölni a partnert.')

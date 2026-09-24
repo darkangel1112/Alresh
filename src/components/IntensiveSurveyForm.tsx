@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useConfirmDialog } from '@/components/ConfirmDialog'
+import { appPath } from '@/lib/app-path'
 import {
   createEmptyIntensiveBusiness,
   createEmptyIntensiveBusinessReport,
@@ -261,7 +262,7 @@ export default function IntensiveSurveyForm({ survey: initialSurvey }: Props) {
     }
     setSaving(true)
     try {
-      const response = await fetch(`/api/kerdoivek/${survey.id}`, {
+      const response = await fetch(appPath(`/api/kerdoivek/${survey.id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
