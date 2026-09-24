@@ -1,0 +1,85 @@
+// Prisma schema – Halgazdálkodási Adatgyűjtő Webapp
+// SQLite lokálisan, könnyen cserélhető PostgreSQL-re
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── Felhasználók ─────────────────────────────────────────────────────────────
+
+model User {
+  id         Int      @id @default(autoincrement())
+  nev        String
+  email      String   @unique
+  szerepkor  String   @default("munkatars") // munkatars | admin
+  // jelszo  String?  // Jelszó mező – aktiválandó ha kell (bcrypt hash)
+  letrehozva DateTime @default(now())
+  surveys    Survey[]
+}
+
+// ─── Partnerek ────────────────────────────────────────────────────────────────
+
+model Partner {
+  id                   Int      @id @default(autoincrement())
+  nev                  String
+  szekhely             String?
+  telefonszam          String?
+  email                String?
+  statisztikai_szamjel String?
+  mak_azonosito        String?
+  megjegyzes           String?
+  letrehozva           DateTime @default(now())
+  modositva            DateTime @updatedAt
+  surveys              Survey[]
+}
+
+// ─── Kitöltés (Survey) ────────────────────────────────────────────────────────
+
+model Survey {
+  id         Int         @id @default(autoincrement())
+  partner    Partner     @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  partnerId  Int
+  feltolto   User        @relation(fields: [userId], references: [id])
+  userId     Int
+  ev         Int
+  tipus      String      // "EXTENSIV" | "INTENZIV"
+  allapot    String      @default("FOLYAMATBAN") // FOLYAMATBAN | KESZ | ARCHIVALT
+  letrehozva DateTime    @default(now())
+  modositva  DateTime    @updatedAt
+
+  // I. Törzsadatok & Ökonómia (mindkét típusnál)
+  torzs      Json?
+
+  // III/b. Lehalászás – Vállalkozás (ext) VAGY Állományváltoz. – Vállalkozás (int)
+  lehalaszasVallalkozas Json?
+
+  // Telephelyek (1 vagy több)
+  telephelyek Telephely[]
+
+  @@unique([partnerId, ev, tipus])
+}
+
+// ─── Telephely ────────────────────────────────────────────────────────────────
+
+model Telephely {
+  id       Int    @id @default(autoincrement())
+  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  surveyId Int
+  sorszam  Int    @default(1)   // Telep sorszáma: 1, 2, 3...
+  nev      String               // Egyedi név pl. "Főtelep", "Déli tó", "Üzem 2"
+
+  // II. Telepi adatok (táplálkozás, munkaerő, halfaj árak, költségek)
+  telepiAdat Json?
+
+  // III/a. Állományváltozás – Telep (kihelyezés / lehalászás korcsoportonként)
+  allomanyvaltozas Json?
+
+  letrehozva DateTime @default(now())
+  modositva  DateTime @updatedAt
+
+  @@unique([surveyId, sorszam])
+}
